@@ -1,40 +1,30 @@
 import Header from "./components/header"
 import Tasks from "./components/tasks"
-import type { IData } from "./interface"
-
-export const tasks: IData[] = [
-  {
-    status: "todo",
-    title: "Estudar testes unitários",
-    description: "Praticar Jest e Testing Library por 1 hora"
-  },
-  {
-    status: "todo",
-    title: "Criar componentes do To-Do App",
-    description: "Implementar inputs, listagem e botão de adicionar"
-  },
-  {
-    status: "checked",
-    title: "Configurar ambiente do projeto",
-    description: "Criar estrutura inicial com React e TypeScript"
-  },
-  {
-    status: "todo",
-    title: "Implementar Redux Toolkit",
-    description: "Criar slice para gerenciar as tasks"
-  },
-  {
-    status: "checked",
-    title: "Criar interface IData",
-    description: "Tipagem base para cada task adicionada"
-  }
-]
+import { addTask } from "./feature/TasksSlice"
+import { useAppDispatch, useAppSelector } from "./hooks"
+import { v4 as uuidv4 } from 'uuid';
+import addBtn from "./assets/addBtn.svg"
+import Form, { type TaskSchemaType } from "./components/form";
+import { useState } from "react";
 
 function App() {
+  
+  const tasks = useAppSelector(param => param.tasks.data)
+  const dispatch = useAppDispatch()
+  const onSubmit = (data: TaskSchemaType)=> {
+    dispatch(addTask( { ...data, id: uuidv4(), status: "todo" } ))
+    setShowForm(false)
+  }
+  const [showForm, setShowForm] = useState<boolean>(false)
+
   return (
-    <div className="bg-[#3A3A72] h-screen">
+    <div className="bg-[#3A3A72]">
       <Header/>
       <Tasks data={tasks}/>
+      { showForm && (
+        <Form onSubmit={onSubmit}/>
+      ) }
+      <img onClick={()=> setShowForm(true)} className="fixed bottom-10 right-10 rounded-full" src={addBtn} alt="add button" />
     </div>
   )
 }
