@@ -16,9 +16,18 @@ const tasksSlice = createSlice({
         addTask: (state, action: PayloadAction<IData>)=> {
             state.data.push(action.payload)
             localStorage.setItem("tasks", JSON.stringify(state.data))
+        },
+        changeStatus: (state, action: PayloadAction<IData>)=> {
+            const index = state.data.findIndex(param => param.id === action.payload.id)
+            if (index === -1) {
+                return
+            }
+            const task = state.data[index]
+            task.status = task.status === "todo" ? "checked" : "todo"
+            localStorage.setItem("tasks", JSON.stringify(state.data))
         }
     }
 })
 
-export const { addTask } = tasksSlice.actions
+export const { addTask, changeStatus } = tasksSlice.actions
 export default tasksSlice.reducer
